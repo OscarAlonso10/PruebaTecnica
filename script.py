@@ -3,7 +3,7 @@ from pymongo import MongoClient
 
 client = MongoClient('localhost')
 db = client['prueba']
-mycol = db["transactions"]
+transactions_col = db["transactions"]
 
 url = "https://mainnet-fullnode1.coti.io/transaction/addressTransactions"
 
@@ -26,6 +26,6 @@ response = response.json()
 for i in response["transactionsData"]:
     try:
         i["_id"] = i.pop("hash")
-        x = mycol.insert_one(i)
+        x = transactions_col.insert_one(i)
     except:
         continue
