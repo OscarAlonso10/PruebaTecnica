@@ -1,10 +1,11 @@
 import requests
 from pymongo import MongoClient
 
-client = MongoClient('localhost')
+print("Inicio conexion mongobd")
+client = MongoClient('mongodb://root:root@mongodb:27017')
 db = client['prueba']
 transactions_col = db["transactions"]
-
+print("Fin conexion mongobd")
 url = "https://mainnet-fullnode1.coti.io/transaction/addressTransactions"
 
 payload = "{\"address\":\"51dbd2feecb8c9e3b5c88129da88156d738d00d57bf4524cc780221c4e414ffc9372b00ad7d75679032d928776b044d40d5febb783d8ac9b241b7c0b1cad77de9b699c23\"}"
@@ -23,9 +24,12 @@ headers = {
 response = requests.request("POST", url, headers=headers, data=payload)
 response = response.json()
 
+print("Se han encontrado", len(response["transactionsData"]), "lineas de datos")
+
 for i in response["transactionsData"]:
     try:
         i["_id"] = i.pop("hash")
         x = transactions_col.insert_one(i)
     except:
         continue
+print("Se han insertado todos los registros en la base datos")

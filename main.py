@@ -2,11 +2,10 @@ import uvicorn
 from pymongo import MongoClient
 from fastapi import FastAPI
 
-client = MongoClient('localhost')
+client = MongoClient('mongodb://root:root@mongodb:27017')
 
 db = client['prueba']
 transactions_col = db["transactions"]
-
 
 app = FastAPI()
 
@@ -21,8 +20,8 @@ Origin  https://explorer.coti.io
 Referer https://explorer.coti.io/
 """
 
-@app.get("/transactions")
 
+@app.get("/transactions")
 def transactions():
     transactions = []
     for transaction in transactions_col.find():
@@ -41,8 +40,8 @@ Origin  https://explorer.coti.io
 Referer https://explorer.coti.io/
 """
 
-@app.get("/especified_transactions")
 
+@app.get("/especified_transactions")
 def transactions():
     transactions = []
     for esp_transaction in transactions_col.find():
@@ -51,5 +50,6 @@ def transactions():
         transactions.append(esp_transactions)
     return {'especified_transactions': transactions}
 
+
 if __name__ == "__main__":
-    uvicorn.run(app)
+    uvicorn.run(app, host="0.0.0.0", port=8000)
